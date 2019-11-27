@@ -1,0 +1,70 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 3: Simple Linear Regression
+========================================================
+
+##### Names: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Florida Lakes data
+```{r}
+floridaLakes <- read.csv(url("https://www.dropbox.com/s/s5r5qagso9s7do2/floridaLakes.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Find the equation for the least squares regression line for predicting Mercury from Alkalinity.
+```{r}
+plot(Mercury~Alkalinity, data=floridaLakes)
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+abline(model1)
+summary(model1)
+```
+```
+Mercury = 0.7221665 - .0055678(Alkilinity)
+```
+
+### Exercise 2:
+Interpret the slope of this regression line in context.
+```
+For every additional unit of Alkilinity, Mercury decreases by .0055678 units.
+```
+
+
+### Exercise 3:
+Interpret the intercept of this regression line in context.
+```
+With no Alkilinity present, the level of Mercury will be .7221665 untis.
+```
+
+
+### Exercise 4:
+What is the size of the typical error when predicting Mercury from Alkalinity?
+```{r}
+summary(model1)
+```
+```
+Residual Standard Error: 0.2662 on 51 degrees of freedom.
+```
+
+
+### Exercise 5:
+What is the residual for Orange Lake?
+```{r}
+
+```
+```
+-.4207455
+```

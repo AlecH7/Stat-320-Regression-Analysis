@@ -1,0 +1,69 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 15: Multicollinearity
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+
+library(car)
+```
+
+
+#### Load the Property Values data
+```{r}
+propertyValues <- read.csv(url("https://www.dropbox.com/s/508qf9u5ugb2maq/propertyValues.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Fit a linear regression model to predict Selling Price from Bedrooms, Bathrooms, TotalSqFt, Floors, Condition, YearBuilt, and YearRenovated. Use VIFs to ascertain if there is multicollinearity among the predictor variables. Explain your answer.
+```{r}
+mod = lm(SellingPrice ~ Bedrooms + Bathrooms + TotalSqFt + Floors + Condition + YearBuilt + YearRenovated, data = propertyValues)
+vif(mod)
+```
+```
+Since the VIFs for YearBuilt (5.86) and YearRenovated (6.38) are greater than 5, we detect multicollinearity among the predictor variables.
+```
+
+
+### Exercise 2:
+Find the correlation matrix for the predictor variables of the regression line.
+```{r}
+mod = lm(SellingPrice ~ Bedrooms + Bathrooms + TotalSqFt + Floors + Condition + YearBuilt + YearRenovated, data = propertyValues)
+cor = cor(propertyValues[, c(2:8)])
+cor
+```
+
+
+### Exercise 3:
+Find the eigenvalues of the correlation matrix above.
+```{r}
+eig = eigen(cor)
+eig$values
+```
+
+
+### Exercise 4:
+Use the sum of the reciprocals of the eigenvalues above to ascertain if there is multicollinearity among the predictor variables. Explain your answer.
+```{r}
+sum(1/eig$values)
+```
+```
+Since we have 7 predictor variables, we want to see if the sum of the reciprocals of the eigen values is greater than 35. The sum of reciprocals is 22.42, so we do not find multicollinearity according to the sum of reciprocal eigen values.
+```
+
+
+### Exercise 5:
+Use the condition number for the eigenvalues above to ascertain if there is multicollinearity among the predictor variables. Explain your answer.
+```{r}
+sqrt(max(eig$values) / min(eig$values))
+```
+```
+Since 6.237 is less than 15, we do not detect any multicollinearity among the predictor variables.
+```

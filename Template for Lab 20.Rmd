@@ -1,0 +1,82 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 20: Functions of Time
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+
+library(car)
+```
+
+
+#### Load the Minnesota Children data
+```{r}
+minnesotaChildren <- read.csv(url("https://www.dropbox.com/s/6dxcvwuykhv2x8x/minnesotaChildren.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Find the equation for the regression line for predicting ObeseOrOverweight from a linear function of Time.
+```{r}
+mod.linear = lm(ObeseOrOverweight ~ Time, data = minnesotaChildren)
+summary(mod.linear)
+```
+```
+ObeseOrOverweight = 23.9 + .278 (Time)
+```
+
+
+### Exercise 2:
+Identify and interpret the slope of this regression line in context.
+```
+For each year that passes, an additional .278% of children aged 2-5 years in Minnesota become overweight or obese.
+```
+
+
+### Exercise 3:
+Is there evidence of seasonality in this time series? Explain.
+```{r}
+plot(ObeseOrOverweight ~ Time, type = "l", data = minnesotaChildren); abline(mod.linear)
+
+
+```
+```
+Yes because the percentage of obese or overweight children reaches a high value every 3 to 4 years according to a time series graph.
+```
+
+
+### Exercise 4:
+Add a seasonal component to this regression line. Has this addition substantially improved the overall effectiveness of the regression model in predicting ObeseOrOverweight? Explain.
+```{r}
+S = 4
+minnesotaChildren$Xcos = cos(2*pi*minnesotaChildren$Time / S)
+minnesotaChildren$Xsin = sin(2*pi*minnesotaChildren$Time / S)
+
+mod.seasonal = lm(ObeseOrOverweight ~ Xcos + Xsin, data = minnesotaChildren)
+summary(mod.seasonal)
+```
+```
+No, the model is not improved. The R squared decreased from .67 to .03 and the adjusted R squared became negative.
+```
+
+
+### Exercise 5:
+Find and interpret a 95% prediction interval for ObeseOrOverweight in 2019.
+```{r}
+mod.both = lm(ObeseOrOverweight ~ Time + Xcos + Xsin, data = minnesotaChildren)
+AIC(mod.linear, mod.both)
+summary(mod.linear)$adj.r.squared
+summary(mod.both)$adj.r.squared
+
+new = data.frame(Time = 30)
+predict.lm(mod.linear, new, interval = "prediction", level = .95)
+```
+```
+We are 95% confident that the percentage of Minnesota children aged 2-5 years that are obese or overweight will be somewhere between 28.82% and 35.7% in 2019.
+```

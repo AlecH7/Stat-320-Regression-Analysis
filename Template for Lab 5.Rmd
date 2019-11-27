@@ -1,0 +1,68 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 5: Inference for the Slope
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Florida Lakes data
+```{r}
+floridaLakes <- read.csv(url("https://www.dropbox.com/s/s5r5qagso9s7do2/floridaLakes.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Construct and interpret a 95% confidence interval for the slope of the regression line for predicting Mercury from Alkalinity.
+```{r}
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+confint(model1, level = .95)
+```
+```
+We are 95% confident that the computed interval of slope of the regression line for predicting Mercury from Alkilinity (-.007507551 to -.003627965) contains the true slope for predicting Mercury from Alkilinity.
+```
+
+
+### Exercise 2:
+Given your answer above, is it plausible that there actually is no association between Mercury and Alkalinity? Explain.
+```{r}
+# Write code here
+```
+According to our 95% confidence interval, this is not plausible. The interval does not contain the value of 0, so we can conclude that this is not plausible. 
+
+### Exercise 3:
+Test the hypothesis that the slope is equal to zero. Interpret your results.
+```{r}
+summary(lm(Mercury~Alkalinity, data=floridaLakes))
+```
+```
+The calculated p-value of 4.822e-07 is less than .05, so we can reject the null hypothesis and conclude that the slope is not equal to zero. This means that there is a relationship between Alkilinity and Mercury.
+```
+
+
+### Exercise 4:
+Calculate the test statistic for an analysis of variance (ANOVA) to ascertain whether the original regression line is an effective predictor of Mercury.
+```{r}
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+anova(model1)
+```
+```
+p-value = 4.822e-07
+```
+
+
+### Exercise 5:
+Interpret the results of the analysis of variance (ANOVA) above.
+```{r}
+# Write code here
+```
+```
+Because the ANOVA p-value is less than .05, we conclude that the model is a good predictor of the relationship between Mercury and Alkilinity.
+```

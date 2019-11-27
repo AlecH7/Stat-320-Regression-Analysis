@@ -1,0 +1,64 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 16: Principal Component Analysis (Pt. 1)
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+
+library(corrplot)
+library(psych)
+```
+
+
+#### Load the Property Values data
+```{r}
+propertyValues <- read.csv(url("https://www.dropbox.com/s/508qf9u5ugb2maq/propertyValues.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Generate a correlation plot of the correlation matrix for the predictor variables of the linear regression model for predicting Selling Price from Bedrooms, Bathrooms, TotalSqFt, Floors, Condition, YearBuilt, and YearRenovated.
+```{r}
+mod = lm(SellingPrice ~ Bedrooms + Bathrooms + TotalSqFt + Floors + Condition + YearBuilt + YearRenovated, data = propertyValues)
+cormat = cor(propertyValues[, c(2:8)])
+corrplot(cormat)
+```
+
+
+### Exercise 2:
+Find the loadings matrix of the analysis to transform the original set of predictors to the same number of orthogonal components.
+```{r}
+comp = pca(r = cormat, nfactors = 7)
+comp$loadings[1:7, 1:7]
+```
+
+
+### Exercise 3:
+Do any of the orthogonal components above appear to be unrelated to the original set of predictor variables? Explain.
+```
+RC7 has values that are all less than |.224| so it would appear that RC7 is unrelated to the original set of predictors. 
+```
+
+
+### Exercise 4:
+Use a scree plot to determine how many orthogonal components to reduce the original set of predictors to based on Kaiser's criterion.
+```{r}
+plot(comp$values, type = "b"); abline(h=1); abline(h=.7)
+```
+```
+Looking at the scree plot and following Kaiser's criterion, the number of factors can be reduced to 2.
+```
+
+
+### Exercise 5:
+Find the loadings matrix of the analysis to reduce the original set of predictors to the number of orthogonal components suggested by Kaiser's criterion.
+```{r}
+comp = pca(r = cormat, nfactors = 2)
+comp$loadings[1:7,1:2]
+```

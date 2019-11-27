@@ -1,0 +1,71 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 8: Logistic Tests and Intervals
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+library(Stat2Data)
+```
+
+
+#### Load the Chile Households data
+```{r}
+chileHouseholds <- read.csv(url("https://www.dropbox.com/s/imla45wvwfupogi/chileHouseholds.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Use the estimated slope from the regression line for predicting Infection from Age to compute an estimated odds ratio. Find a 95% confidence interval for this odds ratio.
+```{r}
+mod = glm(Infection~Age, family = binomial, data = chileHouseholds)
+zstr = qnorm(p = 1 - (1-.95)/2)
+exp(summary(mod)$coef[2,1] + c(-1,1)*zstr*summary(mod)$coef[2,2])
+```
+```
+1.021065 to 1.036704
+```
+
+### Exercise 2:
+Interpret this 95% confidence interval.
+```
+We are 95% confident that a one-unit increase in Age is associated with between a 1.021065 and a 1.036704 fold increase in the odds of getting enough sleep.
+```
+
+
+### Exercise 3:
+Is Age a significant predictor of Infection? Explain.
+```{r}
+mod = glm(Infection~Age, family = binomial, data = chileHouseholds)
+summary(mod)
+```
+```
+Age is a significant predictor of infection because our calculated p-value of 2.2e-13 is less than our alpha level of .05.
+```
+
+### Exercise 4:
+Is the condition of Linearity reasonably met for this regression line?
+```{r}
+mod = glm(Infection~Age, family = binomial, data = chileHouseholds)
+emplogitplot1(Infection~Age, data = chileHouseholds, ngroups = 10)
+```
+```
+Yes, the condition of linearity is resonably met.
+```
+
+
+### Exercise 5:
+At approximately what Age would a person have roughly a 50-50 chance of being Infected?
+```{r}
+slope = .028446
+intercept = .930971
+intercept/slope
+```
+```
+Approximately age 33.
+```

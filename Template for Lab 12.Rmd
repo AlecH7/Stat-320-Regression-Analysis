@@ -1,0 +1,68 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 12: Multiple Logistic Regression
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+library(car)
+library(Stat2Data)
+```
+
+
+#### Load the Census Income data
+```{r}
+censusIncome <- read.csv(url("https://www.dropbox.com/s/sfzmz8bkxgck7bo/censusIncome.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Find the logit and probability forms of the regression line for predicting Income from Age, Race, and Gender.
+```{r}
+mod = glm(Income ~ Age + Race + Gender, family = binomial, data = censusIncome)
+mod$coeff
+```
+```
+logit form: -4.0158 + .038(Age) + .48(RaceWhite) + 1.213(GenderMale)
+probability form: exp(-4.0158 + .038(Age) + .48(RaceWhite) + 1.213(GenderMale))/(1 + exp(-4.0158 + .038(Age) + .48(RaceWhite) + 1.213(GenderMale))
+```
+
+### Exercise 2:
+Use the estimated coefficient for Age to compute and interpret an estimated odds ratio.
+```{r}
+mod = glm(Income ~ Age + Race + Gender, family = binomial, data = censusIncome)
+exp(mod$coeff)
+```
+```
+As Age increases by one unit, the odds of Income being over 50,000 dollars increases by a factor of 1.039, all else held constant.
+```
+
+
+### Exercise 3:
+Estimate the probability that a 33-year-old white female will earn more than $50,000 per year.
+```{r}
+new = data.frame(Age = 33, Race = "White", Gender = "Female")
+predict.glm(mod, new, type = "response")
+```
+
+
+### Exercise 4:
+Does the regression line suggest that Gender has a stronger relationship with Income than does Race? Explain.
+```
+Yes because the absolute value of the slope is larger for Gender than Race. This means gender has a stronger relationship with Income.
+```
+
+
+### Exercise 5:
+Is the condition of Linearity reasonably met for this regression line in terms of Age? Explain.
+```{r}
+emplogitplot1(Income ~ Age, data = censusIncome, ngroups = 10)
+```
+```
+No, the condition of linearity is not reasonably met because the graph clearly follows a curve rather than a linear pattern.
+```

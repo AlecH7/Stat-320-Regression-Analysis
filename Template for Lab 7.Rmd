@@ -1,0 +1,68 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 7: Simple Logistic Regression
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Chile Households data
+```{r}
+chileHouseholds <- read.csv(url("https://www.dropbox.com/s/imla45wvwfupogi/chileHouseholds.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Explain why logistic regression is the most appropriate type of model for predicting Infection from Age.
+```{r}
+# Write code here
+```
+```
+Logistic regression is the most appropriate type of model for predicting Infection from Age because the chance of an occurrence will not be greater than 100% or less than 0%.
+```
+
+### Exercise 2:
+Find the logit form of the regression line for predicting Infection from Age.
+```{r}
+mod = glm(chileHouseholds$Infection ~ chileHouseholds$Age, family = binomial, data = chileHouseholds)
+summary(mod)
+```
+```
+log(odds) = -.930971 + .028446(X)
+```
+
+
+### Exercise 3:
+Find the probability form for this regression line.
+```{r}
+# Write code here
+```
+?? = (e(-.930971 + .028446(X))/(1 + e(-.930971 + .028446(X)))
+
+### Exercise 4:
+Use the estimated slope from this regression line to compute and interpret an estimated odds ratio.
+```{r}
+mod = glm(chileHouseholds$Infection ~ chileHouseholds$Age, family = binomial, data = chileHouseholds)
+exp(mod$coeff)
+```
+```
+A one-unit increase in Age is associated with a 1.0288549 fold increase in the odds of being infected.
+```
+
+
+### Exercise 5:
+Predict the probability of Infection for a 33-year-old person.
+```{r}
+pi <- (exp(-.930971 + .028446*(33))/(1 + exp(-.930971 + .028446*(33))))
+pi
+```
+```
+The probability of infection for a 33-year-old person is .5019367
+```

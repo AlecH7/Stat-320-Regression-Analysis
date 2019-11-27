@@ -1,0 +1,70 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 13: More Logistic Tests and Intervals
+========================================================
+
+##### Name: Alec Herniksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Census Income data
+```{r}
+censusIncome <- read.csv(url("https://www.dropbox.com/s/sfzmz8bkxgck7bo/censusIncome.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Fit a logistic regression model to predict Income from Age, Race, and Gender. Identify which of the predictor variables (Age, Race, Gender) is significantly related to Income. Explain your answer.
+```{r}
+mod = glm(Income ~ Age + Race + Gender, family = binomial, data = censusIncome)
+summary(mod)
+```
+```
+Age, Race, and Gender are all significantly related to Income because they all have p-values less than .05.
+```
+
+
+### Exercise 2:
+Use the estimated coefficient for Gender from the regression line for predicting Income from Age, Race, and Gender to compute an estimated odds ratio. Find a 99% confidence interval for this odds ratio.
+```{r}
+exp(1.213)
+exp(confint(mod, level = .99))
+```
+```
+Odds ratio: 3.36. 99% confidence interval: 3.12 to 3.62
+```
+
+### Exercise 3:
+Interpret the confidence interval for the odds ratio in context.
+```
+We are 99% confident that as Gender changes from Female to Male, the odds of Income being greater than 50,000 dollars increases by a factor of between 3.12 and 3.62, all else held constant.
+```
+
+
+### Exercise 4:
+Find the test statistic and the p-value for a nested likelihood ratio (drop-in-deviance) test to ascertain whether Race and Gender can be eliminated, as a group, from the regression model of Income.
+```{r}
+full = glm(Income ~ Age + Race + Gender, family = binomial, data = censusIncome)
+summary(full)
+reduced = glm(Income ~ Age, family = binomial, data = censusIncome)
+summary(reduced)
+g = 51214-48780
+g
+1-pchisq(g, df = 2)
+```
+```
+Test Statistic = 2434. p = 0
+```
+
+
+### Exercise 5:
+Interpret the results of the nested likelihood ratio (drop-in-deviance) test above.
+```
+Race and Gender, as a group, add significantly to the regression model of Income.
+```

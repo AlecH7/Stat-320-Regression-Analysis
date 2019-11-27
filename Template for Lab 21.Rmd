@@ -1,0 +1,79 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 21: ARIMA Models
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+
+library(forecast)
+library(lmtest)
+```
+
+
+#### Load the Minnesota Children data
+```{r}
+minnesotaChildren <- read.csv(url("https://www.dropbox.com/s/6dxcvwuykhv2x8x/minnesotaChildren.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Find the equation for the third-order autoregressive model for predicting ObeseOrOverweight and identify which of the lag coefficients are significantly related to the response.
+```{r}
+timeObeseOrOverweight = ts(minnesotaChildren$ObeseOrOverweight, start = c(1990, 1), frequency = 1)
+mod.AR3 = arima(timeObeseOrOverweight, order = c(3,0,0))
+mod.AR3
+
+coeftest(mod.AR3)
+```
+```
+ObeseOROverweight = 26.1147 + .92 (ar1) + .2485 (ar2) - .22 (ar3)
+Only the first lag coefficient (ar1) is significant at alpha = .05 level (p = .000004).
+```
+
+
+### Exercise 2:
+Fit a first-order and a second-order moving average model for predicting ObeseOrOverweight and explain which model is more effective at predicting the response.
+```{r}
+mod.MA1 = arima(timeObeseOrOverweight, order = c(0,0,1))
+mod.MA2 = arima(timeObeseOrOverweight, order = c(0,0,2))
+mod.MA1
+mod.MA2
+```
+```
+The second-order moving average model for predicting ObeseOrOverweight is more effective because it has a lower aic value.
+```
+
+
+### Exercise 3:
+Find the equation for the "best" ARIMA model for predicting ObeseOrOverweight based on AIC.
+```{r}
+mod.ARIMA = auto.arima(timeObeseOrOverweight, allowdrift = FALSE)
+mod.ARIMA
+```
+```
+ObeseOrOverweight = -.418 (ar1) - .73 (ma1)
+```
+
+
+### Exercise 4:
+How many autoregressive, moving average, and difference terms are in this "best" ARIMA model?
+```
+1 autoregressive term, 2 difference terms, and 1 moving average term.
+```
+
+
+### Exercise 5:
+Use this ARIMA model to find and interpret a 95% prediction interval for ObeseOrOverweight in 2019.
+```{r}
+future = forecast(mod.ARIMA, h = 5)
+future
+```
+```
+We are 95% confident the percentage of obese or overweight 2-5 year old children in Minnesota will be somewhere between 21.86 and 30.39 in 2019.
+```

@@ -1,0 +1,74 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 2: Variables and Study Designs
+========================================================
+
+##### Names: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Isle Royale data
+```{r}
+isleRoyale <- read.csv(url("https://www.dropbox.com/s/
+u7hwcptxt6lm7yb/isleRoyale.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Identify the observational units and the variables.
+```{r}
+# Write code here
+```
+```
+Observational Units: Year, Wolves, Moose
+Variables: Year, Wolf Population, Moose Population, Wolf Abundance, Wolf Increase
+```
+
+### Exercise 2:
+Clasify each of the four variables as either quantitative or categorical. For categorical variables, also indicate whether the variable is binary, ordinal, or nominal.
+```{r}
+# Write code here
+```
+```
+Year: Quantitative
+Wolf Population: Quantitative
+Moose Population: Quantitative
+Wolf Abundance: Categorical, Ordinal
+Wolf Increase: Categorical, Binary
+```
+
+
+### Exercise 3:
+Identify the response variable and the explanatory variable.
+```{r}
+# Write code here
+```
+```
+Explanatory variable is Wolf Population and response variable is Moose Population.
+```
+
+
+### Exercise 4:
+Can we use these results to conclude that increases in the number of wolves caused the decreases in the number of moose on the island? Explain.
+```{r}
+# Write code here
+```
+```
+No, this was an observational study. Only a controlled randomized test can prove causation rather than just a relationship.
+```
+
+
+### Exercise 5:
+Which type of regression model is most appropriate for this situation? Explain.
+```{r}
+# Write code here
+```
+```
+We have a quantitative explanatory variable and a quantitative response variable, so we should use a Simple Linear Regression Model.
+```

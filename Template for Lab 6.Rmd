@@ -1,0 +1,73 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 6: Intervals for Predictios
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Florida Lakes data
+```{r}
+floridaLakes <- read.csv(url("https://www.dropbox.com/s/s5r5qagso9s7do2/floridaLakes.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Calculate and interpret the ratio of the model sum of squares and the total sum of squares for the regression line for predicting Mercury from Alkalinity.
+```{r}
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+summary(model1)
+```
+```
+.3943 if the variability in Mercury is explained by the regression model.
+```
+
+### Exercise 2:
+Identify which of the possible predictor variables (Alkalinity, Calcium, pH, Chlorophyll) is the most strongly correlated with Mercury.
+```{r}
+(cor(floridaLakes$Mercury, floridaLakes$Alkalinity))^2
+(cor(floridaLakes$Mercury, floridaLakes$Calcium))^2
+(cor(floridaLakes$Mercury, floridaLakes$pH))^2
+(cor(floridaLakes$Mercury, floridaLakes$Chlorophyll))^2
+```
+```
+Alkalinity is the most strongly correlated with Mercury (r^2 = .394).
+```
+
+
+### Exercise 3:
+Find and interpret a 90% confidence interval for the mean Mercury of all lakes with an Alkalinity of 33.
+```{r}
+new.lm <- lm(Mercury~Alkalinity, data=floridaLakes)
+Alkilinity33 <- data.frame(Alkalinity = 33)
+predict(new.lm, Alkilinity33,interval = "confidence", level = .9)
+```
+We are 90% confident that a Florida Lake with an Alkilinity of 33 will have a mercury level between .4767 and .6 mg. 
+
+### Exercise 4:
+Find and interpret a 90% prediction interval for the Mercury of a lake with an Alkalinity of 33.
+```{r}
+new.lm <- lm(Mercury~Alkalinity, data=floridaLakes)
+Alkilinity33 <- data.frame(Alkalinity = 33)
+predict(new.lm, Alkilinity33, interval = "predict", level = .9)
+```
+```
+We are 90% confident  that the average Mercury of all Florida Lakes with an Alkilinity of 33 is between .0882 and .9886 mg.
+```
+
+
+### Exercise 5:
+Was it appropriate to construct and interpret these intervals? Explain.
+```{r}
+# Write code here
+```
+```
+No, the conditions are not met so we cannot say that is it appropriate to cinstruct and interpret these intervals. The conditions are not met because the graph fans out rather than following a uniform spread throughout. A linear model is not the best fit for these points, so the condition of linearity is not met either. The condition of zero mean is met because the residual plot line is at zero. The condition of normality is not met because the graph does not follow a normal distribution. Since only 1/4 conditions were met, these tests are not appropriate.
+```

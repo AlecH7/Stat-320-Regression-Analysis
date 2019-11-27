@@ -1,0 +1,71 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 1: The R Environment
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Isle Royale data
+```{r}
+isleRoyale <- read.csv(url("https://www.dropbox.com/s/
+u7hwcptxt6lm7yb/isleRoyale.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Below, enter code to extract just the counts of moose in each year:
+```{r}
+isleRoyale$Moose
+```
+
+
+### Exercise 2:
+What is the minimum and maximum number of wolves that have been counted on Isle Royale?
+```{r}
+min(isleRoyale$Wolf)
+max(isleRoyale$Wolf)
+```
+```
+Min: 12
+Max: 50
+```
+
+
+### Exercise 3:
+Determine the year with the largest wolf count.
+```{r}
+a <- which(isleRoyale$Wolf == max(isleRoyale$Wolf), arr.ind = TRUE)
+isleRoyale$Year[a]
+```
+```
+1980
+```
+
+
+### Exercise 4:
+Determine how many years saw an increase in the number of wolves from the previous year.
+```{r}
+true.false.vector <- c(isleRoyale$WolfIncrease == "Yes")
+sum(true.false.vector)
+```
+```
+29
+```
+
+
+### Exercise 5:
+Calculate the mean number of wolves in a random sample of 10 years, taken without replacement.
+```{r}
+mean(sample(isleRoyale$Wolf, replace = FALSE, size = 10))
+```
+```
+19.3
+```

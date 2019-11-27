@@ -1,0 +1,65 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 10: Interaction Terms
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Student Survey data
+```{r}
+studentSurvey <- read.csv(url("https://www.dropbox.com/s/hflcpo6i45aqkfy/studentSurvey.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Interpret the intercept of the regression line for predicting GPA from Exercise, TV, and Smoke.
+```{r}
+mod = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+summary(mod)
+```
+```
+If a subject doesn't watch any TV, doesn't exercise at all, and does not smoke, their predicted GPA will be 3.328221.
+```
+
+### Exercise 2:
+Find and interpret a 95% prediction interval for the GPA of a non-smoking student who exercises 3 hours per week and spends 7 hours per week watching television.
+```{r}
+mod = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+new = data.frame(Exercise = 3, TV = 7, Smoke = 0)
+predict.lm(mod, new, interval = "prediction", level = .95)
+```
+```
+We are 95% confident that a student who exercises 3 hours per week, watches TV 7 hours per week, and does not smoke will have a GPA between 2.466038 and 4.0037.
+```
+
+
+### Exercise 3:
+Add Pulse as an explanatory variable to the regression line for predicting GPA from Exercise, TV, and Smoke. Has this addition increased the amount of total variability in GPA that is explained by the regression model? Explain.
+```{r}
+mod = lm(GPA ~ Exercise + TV + Smoke + Pulse, data = studentSurvey)
+summary(mod)
+```
+```
+Since adding the variable Pulse increased the R-squared value from .04857 to .05829, we can say that there was an increase in the total variability in GPA explained by the regression model.
+```
+
+### Exercise 4:
+Has the addition of Pulse improved the overall effectiveness of the regression model in predicting GPA? Explain.
+```
+Since the adijusted R-squared increased from .04015 to .04715, we can say that the addition of Pulse improved the model.
+```
+
+
+### Exercise 5:
+Explain why we might want to add an interaction term for Exercise * TV to the original regression model. Would you expect the coefficient of this interaction to be positive or negative?
+```
+We would be able to see how the effect of exercise changes based on the amount of TV a student watches. We could also see if a student's GPA that watches a lot of TV is more influenced by exercise compared to a student that doesn't watch any TV.I would expect a positive interaction coefficient because I think any amount of exercise will have a large impact on the students that watch a lot of TV in terms of GPA.
+```

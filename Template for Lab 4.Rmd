@@ -1,0 +1,75 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 4: Transformations and Outliers
+========================================================
+
+##### Names: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Florida Lakes data
+```{r}
+floridaLakes <- read.csv(url("https://www.dropbox.com/s/s5r5qagso9s7do2/floridaLakes.csv?dl=1"))
+```
+
+
+### Exercise 1: 
+Are the conditions of Linearity and Uniform Spread reasonably met for the regression line for predicting Mercury from Alkalinity? Explain.
+```{r}
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+plot(floridaLakes$Mercury~floridaLakes$Alkalinity); abline(model1)
+plot(model1$resid ~ model1$fitted); abline(h = 0)
+```
+```
+No, these conditions are not met because the graph fans out rather than following a uniform spread throughout. A linear model is not the best fit for these points, so these conditions are not met.
+```
+
+### Exercise 2:
+Are the conditions of Zero Mean and Normality reasonable met for this regression line? Explain.
+```{r}
+plot(Mercury~Alkalinity, data=floridaLakes)
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+abline(model1)
+summary(model1)
+```
+```
+The condition of zero mean is met because the residual plot line is at zero. The condition of normality is not met because the graph does not follow a normal distribution.
+```
+
+
+### Exercise 3:
+Predict the Mercury of a lake with an Alkalinity of 33.
+```{r}
+x <- (-.0055678*(33) + .7221665)
+x
+```
+
+
+### Exercise 4:
+Are there any obvious outliers or influential points in this regression line? Explain.
+```{r}
+OutVals = boxplot(floridaLakes$Mercury, plot=FALSE)$out
+OutVals
+```
+```
+According to r boxplot values, there is one outlier with a mercury value of 1.53. This shows up in the upper left-hand corner of the scater plot. I used boxplot values because the ourliers are not included in the actual boxplot. Looking at the graph also shows that this point is furthest away from the regression line.
+```
+
+
+### Exercise 5:
+Transform Alkalinity by using a log transofmration. Would you prefer Alkalinity or the log transformation of it to predict Mercury?
+```{r}
+model1=lm(Mercury~Alkalinity, data=floridaLakes)
+plot(floridaLakes$Mercury~floridaLakes$Alkalinity); abline(model1)
+model2=lm(Mercury~log(Alkalinity), data=floridaLakes)
+plot(floridaLakes$Mercury~log(floridaLakes$Alkalinity)); abline(model2)
+```
+```
+I think the log transfrmation graph is a better predictor because the points are more spread-out rather than being clumped together on one side of the graph. Both graphs fan out from right to left, but the log graph is less noticable. 
+```

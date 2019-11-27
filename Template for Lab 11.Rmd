@@ -1,0 +1,75 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 11: Correlated Predictors and Subsets
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+library(car)
+```
+
+
+#### Load the Student Survey data
+```{r}
+studentSurvey <- read.csv(url("https://www.dropbox.com/s/hflcpo6i45aqkfy/studentSurvey.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Are the conditions of Linearity, Uniform Spread, and Normality reasonably met for the regression line for predicting GPA from Exercise, TV, and Smoke? Explain.
+```{r}
+model1 = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+plot(model1$resid ~ model1$fitted); abline(h=0)
+qqnorm(model1$resid); qqline(model1$resid)
+```
+```
+Based on the QQ plot and the residuals plot, the conditions of Linearity, Uniform Spread, Zero Mean, and Normality are all reasonably met for this model.
+```
+
+### Exercise 2:
+Is there evidence of multicollinearity between Exercise, TV, and Smoke? Explain.
+```{r}
+mod = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+vif(mod)
+```
+```
+No, since all of the vif values are less than 5, we can say there is no evidence of multicollinearity between Exercise, TV, and Smoke.
+```
+
+
+### Exercise 3:
+Find the test statistic and the p-value for a nested F-test to ascertain whether TV adds significantly to the regression model for predicting GPA from Exercise, TV, and Smoke.
+```{r}
+full = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+anova(full)
+reduced = lm(GPA ~ Exercise + Smoke, data = studentSurvey)
+anova(reduced)
+anova(reduced, full)
+```
+```
+4.9066
+```
+
+### Exercise 4:
+Interpret the conclusion of this test in context.
+```
+We have evidence to conclude that TV adds significantly to the model.
+```
+
+
+### Exercise 5:
+Does the removal of TV from the regression model change your estimate of the relationship between GPA and Exercise?
+```{r}
+full = lm(GPA ~ Exercise + TV + Smoke, data = studentSurvey)
+summary(full)
+reduced = lm(GPA ~ Exercise + Smoke, data = studentSurvey)
+summary(reduced)
+```
+```
+Since the change in slope is miniscule, the removal of TV from the regression model does not change the estimate of the relationship between GPA and Exercise.
+```

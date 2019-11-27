@@ -1,0 +1,64 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 9: Multiple Linear Regression
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Student Survey data
+```{r}
+studentSurvey <- read.csv(url("https://www.dropbox.com/s/hflcpo6i45aqkfy/studentSurvey.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Find the equation for the regression line for predicting GPA from Exercise, TV, and Smoke.
+```{r}
+mod = lm(GPA ~ TV + Smoke + Exercise, data = studentSurvey)
+summary(mod)
+```
+```
+GPA = 3.231608 -.008959(TV) - .106476(Smoke) -.011285(Exercise)
+```
+
+### Exercise 2:
+Does the regression line suggest that TV has a stronger relationship with GPA than does Exercise? Explain.
+```
+No, the slope of Exercise is further away from 0, so Exercise has a stronger relationship with GPA than TV.
+```
+
+
+### Exercise 3:
+Identify and interpret the coefficient of TV of this regression line in context.
+```
+The coefficient of TV is -.008500. As TV increases by one hour per week, the value of GPA decreases by .008500, all else held constant. 
+```
+
+### Exercise 4:
+Construct and interpret a 90% confidence interval for the coefficient of TV.
+```{r}
+mod = lm(GPA ~ TV + Smoke + Exercise, data = studentSurvey)
+confint(mod, level = .9)
+```
+```
+We are 90% confident that a one-hour increase in TV watched per week will increase the predicted value of GPA by somewhere between -.01461120 and -.002388305
+```
+
+
+### Exercise 5:
+Test the hypothesis that Exercise has a significant effect on GPA. Interpret your results.
+```{r}
+mod = lm(GPA ~ TV + Smoke + Exercise, data = studentSurvey)
+summary(mod)
+```
+```
+Since p = .0032 is less than .05, we reject the null hypothesis and conclude that Exercise has a significant effect on GPA.
+```

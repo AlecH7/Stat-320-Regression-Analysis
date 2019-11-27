@@ -1,0 +1,71 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 17: Principal Component Analysis (Pt. 2)
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+
+library(corrplot)
+library(psych)
+```
+
+
+#### Load the Property Values data
+```{r}
+propertyValues <- read.csv(url("https://www.dropbox.com/s/508qf9u5ugb2maq/propertyValues.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Generate a correlation plot of the loadings matrix of the analysis to reduce the original set of predictors in the regression model for predicting Selling Price from Bedrooms, Bathrooms, TotalSqFt, Floors, Condition, YearBuilt, and YearRenovated to the number of orthogonal components suggested by Kaiser's criterion.
+```{r}
+mod = lm(SellingPrice ~ Bedrooms + Bathrooms + TotalSqFt + Floors + Condition + YearBuilt + YearRenovated, data = propertyValues)
+cormat = cor(propertyValues[, c(2:8)])
+comp = pca(r = cormat, nfactors = 2)
+corrplot(comp$loadings)
+```
+
+
+### Exercise 2:
+Which of the original predictor variables comprise the majority of the second orthogonal component?
+```
+Bedrooms, Bathrooms, TotalSqFt
+```
+
+
+### Exercise 3:
+What latent variable is likely being represented by this second orthogonal component?
+```
+Reasonable Occupancy
+```
+
+
+### Exercise 4:
+Use the loadings matrix to find the predicted value of this second orthogonal component for the first property in the data.
+```{r}
+comp$loadings
+```
+```
+RC2 = .826(3) + .808(1) + .873(1180) + .339(1) + .173(3) + .231(1955) + .250(1955) = 1974.64
+```
+
+### Exercise 5:
+The summary output of the regression model for predicting Selling Price from the first and second orthogonal components is below. Did reducing the original set of predictor variables improve the overall effectiveness of the regression model in predicting Selling Price? Explain.
+```
+Residual standard error: 254500 on 21610 degrees of freedom
+Multiple R-squared:  0.5199,	Adjusted R-squared:  0.5199 
+F-statistic: 1.17e+04 on 2 and 21610 DF,  p-value: < 2.2e-16
+```
+```{r}
+summary(mod)
+```
+
+```
+Yes, the adjusted R-squared value increased with the reduced set of predictor variables, so the effectiveness of the regreession model for predicting selling price is improved.
+```

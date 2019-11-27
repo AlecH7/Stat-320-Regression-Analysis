@@ -1,0 +1,64 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 14: Non-Independent Errors
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Trees Excerpt data
+```{r}
+treesExcerpt <- read.csv(url("https://www.dropbox.com/s/8yh5ycgdxjccr6y/treesExcerpt.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Fit a linear regression model to predict DBH from Elev and ConArea. Calculate the autocorrelation between the residuals and each of their previous residuals for this regression line.
+```{r}
+mod = lm(DBH ~ ConArea+Elev, data = treesExcerpt)
+cor(head(mod$residuals, -1), tail(mod$residuals, -1))
+```
+
+
+### Exercise 2:
+Use an index plot of the residuals for the regression line to ascertain if autocorrelation is present. Explain your answer.
+```{r}
+mod = lm(DBH ~ ConArea+Elev, data = treesExcerpt)
+plot(mod$residuals, type = "b"); abline(h = 0)
+```
+It appears as though the residuals follow a pattern that goes from positive to negative. This makes me think autocorrelation could be present. 
+```
+
+
+### Exercise 3:
+Find the number of runs and the number of positive and negative residuals for the regression line.
+```
+4 runs, 6 positive points, 11 negative points.
+```
+
+
+### Exercise 4:
+Find the test statistic and the p-value for a runs test to ascertain whether autocorrelation is present in the regression model of DBH.
+```{r}
+m = 4; n1 = 6; n2 = 11
+mu = 2*n1*n2/(n1 + n2) + 1
+sig = sqrt(2*n1*n2*(2*n1*n2-n1-n2)/((n1+n2)^2*(n1+n2-1)))
+z = (m-mu) / sig
+z
+pnorm(q = z, mean = 0, sd = 1)
+```
+
+
+
+### Exercise 5:
+Interpret the results of the runs test above.
+```
+We reject the null hypothesis and find evidence of autocorrelation in the model (z = -2.63, p = .004).
+```

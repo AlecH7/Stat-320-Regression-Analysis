@@ -1,0 +1,87 @@
+<!-- INSTRUCTION: This is the template you will use to type up your responses to the exercises. To produce a document that you can print out and turn in just click on Knit HTML above. All you need to do to complete the lab is to type up your BRIEF answers and the R code (when necessary) in the spaces provided below. -->
+
+STAT 320-D01 Lab 18: Stepwise Variable Selection
+========================================================
+
+##### Name: Alec Henriksen
+
+
+#### Load R libraries
+```{r warning=FALSE, message=FALSE}
+library(rmarkdown)
+library(knitr)
+```
+
+
+#### Load the Minnesota Trees data
+```{r}
+minnesotaTrees <- read.csv(url("https://www.dropbox.com/s/zu427ydgmxxjo4p/minnesotaTrees.csv?dl=1"))
+```
+
+
+### Exercise 1:
+Use AIC to determine if Lat, Long, and ConArea, as a group, provide a "better" description of DBH than do Elev and Slope, as a group. Explain your answer.
+```{r}
+mod.1 = lm(DBH ~ Lat + Long + ConArea, data = minnesotaTrees)
+mod.2 = lm(DBH ~ Elev + Slope, data = minnesotaTrees)
+AIC(mod.1, mod.2)
+```
+```
+Lat, Long, and ConArea, as a group, provide a better description of DBH because their model has a lower AIC value.
+```
+
+
+### Exercise 2:
+Starting with the full set of predictors (Lat, Long, ConArea, Elev, Slope, Aspect), use backward elimination based on AIC until you have the "best" model for DBH and find the resulting equation for the regression line.
+```{r}
+mod.full = lm(DBH ~ Lat + Long + ConArea + Elev + Slope + Aspect, data = minnesotaTrees)
+step(mod.full, direction = "backward")
+
+```
+```
+The best model we found is using Elev and Long as our predictor variables.
+DBH = -221.2 + .0063 (Elev) - 2.79 (Long)
+```
+
+
+### Exercise 3:
+Use forward selection based on AIC until you find the "best" model for DBH and find the resulting equation for the regression line.
+```{r}
+mod.none = lm(DBH ~ 1, data = minnesotaTrees)
+step(mod.none, direction = "forward", scope =~ Lat + Long + ConArea + Elev + Slope + Aspect)
+```
+```
+The best model we found is using Elev and Long as our predictor variables.
+DBH = -221.2 + .0063 (Elev) - 2.79 (Long)
+```
+
+
+### Exercise 4:
+Find the value of Mallow's Cp for the regression line above and use it to explain if the model is worth considering.
+```{r}
+mod.step = lm(DBH ~ Elev + Long, data = minnesotaTrees)
+anova(mod.step)
+anova(mod.full)
+142513/85.6 + 2*(2+1) - 1670
+```
+```
+Since Mallow's Cp = .8715 is less than (m+1) = 3, we think this reduced model is worth considering.
+```
+
+
+### Exercise 5:
+Use a "best subsets" procedure to determine which five predictors together would explain the most variability in DBH and find the resulting equation for the regression line. Hint: there are six unique five-variable combinations of the six predictor variables.
+```{r}
+mod.1 = lm(DBH ~ Lat + Long + ConArea + Elev + Slope, data = minnesotaTrees)
+mod.2 = lm(DBH ~ Lat + Long + ConArea + Elev + Aspect, data = minnesotaTrees)
+mod.3 = lm(DBH ~ Lat + Long + ConArea + Aspect + Slope, data = minnesotaTrees)
+mod.4 = lm(DBH ~ Lat + Long + Aspect + Elev + Slope, data = minnesotaTrees)
+mod.5 = lm(DBH ~ Lat + Aspect + ConArea + Elev + Slope, data = minnesotaTrees)
+mod.6 = lm(DBH ~ Aspect + Long + ConArea + Elev + Slope, data = minnesotaTrees)
+AIC(mod.1, mod.2, mod.3, mod.4, mod.5, mod.6)
+summary(mod.6)
+```
+```
+The lowest AIC of the 6 models is the model that uses Aspect, Long, ConArea, Elev, and Slope to determine DBH.
+DBH = -190.4 + .003 (Aspect) - 2.47 (Long) - .000002 (ConArea) + .0055 (Elev) - .0099 (Slope)
+```
